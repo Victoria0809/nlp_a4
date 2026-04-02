@@ -1,0 +1,42 @@
+# Model files - DO NOT COMMIT
+models/
+models/**
+*.bin
+*.safetensors
+*.pt
+*.pth
+pytorch_model.bin
+tf_model.h5
+model.safetensors
+
+# NLTK data - DO NOT COMMIT
+nltk_data/
+nltk_data/**
+*.zip
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/secrets.toml
