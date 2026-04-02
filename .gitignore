@@ -1,31 +1,37 @@
-# Model files - DO NOT COMMIT
-models/
-models/**
-*.bin
-*.safetensors
-*.pt
-*.pth
-pytorch_model.bin
-tf_model.h5
-model.safetensors
-
-# NLTK data - DO NOT COMMIT
+# NLTK 数据
 nltk_data/
-nltk_data/**
-*.zip
+nltk_data/*
 
-# Python cache
+# 模型文件
+models/
+models/*
+
+# Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
+*.py[cod]
+*.class
 *.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# Virtual environment
+# 虚拟环境
 venv/
-env/
 ENV/
+env/
 
 # IDE
 .vscode/
@@ -33,10 +39,3 @@ ENV/
 *.swp
 *.swo
 *~
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Streamlit
-.streamlit/secrets.toml
