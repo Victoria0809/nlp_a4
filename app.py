@@ -34,55 +34,28 @@ def load_spacy_model():
         return spacy.load("en_core_web_sm")
 
 
-# ====== 2. 缓存加载 BERT 模型（强制使用本地） ======
+# ====== 2. 缓存加载 BERT 模型和分词器 ======
 @st.cache_resource
 def load_bert_model():
-    """强制从本地加载 BERT 模型"""
-    # 使用绝对路径（关键！）
-    model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'models', 'bert-base-uncased'))
-
-    st.info(f"🔍 模型路径: {model_path}")
-
-    # 检查路径是否存在
-    if not os.path.exists(model_path):
-        st.error(f"❌ 模型目录不存在: {model_path}")
-        st.info("💡 请运行 download_models.py 下载模型")
-        return None, None
-
-    # 检查关键文件是否存在
-    required_files = ['config.json', 'pytorch_model.bin', 'tokenizer_config.json', 'vocab.txt']
-    missing_files = [f for f in required_files if not os.path.exists(os.path.join(model_path, f))]
-
-    if missing_files:
-        st.error(f"❌ 缺少关键文件: {', '.join(missing_files)}")
-        st.info("💡 请重新运行 download_models.py 确保下载完整")
-        return None, None
-
     try:
-        st.info("⏳ 正在加载 BERT 模型（离线模式）...")
+        st.info("🔄 正在加载 BERT 模型...")
 
-        # 强制使用本地文件，不联网
-        tokenizer = BertTokenizer.from_pretrained(
-            model_path,
-            local_files_only=True,  # ⚠️ 只使用本地文件
-            use_fast=True
-        )
-
-        model = BertModel.from_pretrained(
-            model_path,
-            local_files_only=True,  # ⚠️ 只使用本地文件
-            torch_dtype='auto'
-        )
+        # 尝试从本地加载
+        model_path = "/mount/src/nlp_a4/models/bert-base-uncased"
+        if os.path.exists(model_path):
+            tokenizer = AutoTokenizer.from_pretrained(model_path)
+            model = AutoModel.from_pretrained(model_path)
+        else:
+            # 本地不存在，从 Hugging Face Hub 下载
+            st.warning("⚠️ 本地模型不存在，从 Hugging Face Hub 下载...")
+            tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+            model = AutoModel.from_pretrained("bert-base-uncased")
 
         st.success("✅ BERT 模型加载成功！")
         return tokenizer, model
-
     except Exception as e:
-        st.error(f"❌ 模型加载失败: {str(e)}")
-        st.error(f"💡 错误详情: {type(e).__name__}")
-        import traceback
-        st.code(traceback.format_exc())
-        return None, None
+        st.error(f"❌ BERT 模型加载失败: {str(e)}")
+        raise
 
 # 初始化应用
 def initialize_app():
