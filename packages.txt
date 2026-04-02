@@ -1,0 +1,6 @@
+echo "libgl1-mesa-glx" > packages.txt
+echo "libglib2.0-0" >> packages.txt
+echo "libsm6" >> packages.txt
+echo "libxext6" >> packages.txt
+echo "libxrender-dev" >> packages.txt
+echo "libgomp1" >> packages.txt
