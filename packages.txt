@@ -1,6 +1,0 @@
-build-essential
-libssl-dev
-libffi-dev
-python3-dev
-libblas-dev
-liblapack-dev
