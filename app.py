@@ -40,16 +40,9 @@ def load_bert_model():
     try:
         st.info("🔄 正在加载 BERT 模型...")
 
-        # 尝试从本地加载
-        model_path = "/mount/src/nlp_a4/models/bert-base-uncased"
-        if os.path.exists(model_path):
-            tokenizer = AutoTokenizer.from_pretrained(model_path)
-            model = AutoModel.from_pretrained(model_path)
-        else:
-            # 本地不存在，从 Hugging Face Hub 下载
-            st.warning("⚠️ 本地模型不存在，从 Hugging Face Hub 下载...")
-            tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
-            model = AutoModel.from_pretrained("bert-base-uncased")
+        # 从 Hugging Face Hub 自动下载
+        tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+        model = AutoModel.from_pretrained("bert-base-uncased")
 
         st.success("✅ BERT 模型加载成功！")
         return tokenizer, model
