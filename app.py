@@ -12,8 +12,8 @@ import os
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 os.environ['HF_HOME'] = os.path.join(os.path.dirname(__file__), '.cache')
 os.environ['TRANSFORMERS_CACHE'] = os.path.join(os.path.dirname(__file__), '.cache')
-os.environ['TRANSFORMERS_OFFLINE'] = '1'  # ⚠️ 强制离线模式
-os.environ['HF_DATASETS_OFFLINE'] = '1'
+#os.environ['TRANSFORMERS_OFFLINE'] = '1'  # ⚠️ 强制离线模式
+#os.environ['HF_DATASETS_OFFLINE'] = '1'
 
 from transformers import BertTokenizer, BertModel
 
