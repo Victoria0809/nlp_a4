@@ -25,7 +25,13 @@ nltk.data.path.insert(0, nltk_data_dir)
 # ====== 1. 缓存加载 spaCy 模型 ======
 @st.cache_resource
 def load_spacy_model():
-    return spacy.load("en_core_web_sm")
+    try:
+        return spacy.load("en_core_web_sm")
+    except OSError:
+        st.warning("⚠️ 正在下载 spaCy 模型...这可能需要几分钟时间")
+        import subprocess
+        subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"], check=True)
+        return spacy.load("en_core_web_sm")
 
 
 # ====== 2. 缓存加载 BERT 模型（强制使用本地） ======
