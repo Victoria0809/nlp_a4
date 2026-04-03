@@ -33,14 +33,16 @@ def load_spacy_model():
         subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"], check=True)
         return spacy.load("en_core_web_sm")
 
-# ====== 添加 NLTK 资源自动下载 ======
-def download_nltk_resources():
-    """自动下载所需的 NLTK 资源"""
+
+# 在 initialize_app() 函数中调用
+# 初始化应用
+def initialize_app():
+    # ====== 新增：NLTK 资源自动下载 ======
     import ssl
 
     # 处理 SSL 证书问题
     try:
-        _create_unverified_https_context = ssl._create_unverified_context
+        _create_unverified_https_context = ssl._create_unverified_https_context
     except AttributeError:
         pass
     else:
@@ -52,27 +54,18 @@ def download_nltk_resources():
     for resource in required_resources:
         try:
             nltk.data.find(resource)
-            print(f"✅ {resource} 已存在")
         except LookupError:
             try:
-                print(f"📥 正在下载 {resource}...")
                 nltk.download(resource, download_dir=nltk_data_dir, quiet=True)
-                print(f"✅ {resource} 下载成功")
             except Exception as e:
-                print(f"❌ {resource} 下载失败: {e}")
                 # 如果 punkt_tab 下载失败，尝试 punkt
                 if resource == 'punkt_tab':
                     try:
                         nltk.download('punkt', download_dir=nltk_data_dir, quiet=True)
-                        print("✅ punkt 下载成功（作为备用）")
                     except:
                         pass
 
-# 在 initialize_app() 函数中调用
-def initialize_app():
-    # 先下载 NLTK 资源
-    download_nltk_resources()
-
+    # 加载其他模型
     nlp = load_spacy_model()
     tokenizer, model = load_bert_model()
     return nlp, tokenizer, model
