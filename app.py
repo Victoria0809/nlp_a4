@@ -18,8 +18,25 @@ os.environ['TRANSFORMERS_CACHE'] = os.path.join(os.path.dirname(__file__), '.cac
 from transformers import BertTokenizer, BertModel
 
 
+# 设置 NLTK 数据目录
 nltk_data_dir = os.path.join(os.path.dirname(__file__), 'nltk_data')
 nltk.data.path.insert(0, nltk_data_dir)
+
+# ====== 新增：兼容性检查 ======
+def ensure_nltk_resources():
+    """确保 NLTK 资源可用"""
+    # 优先尝试 punkt_tab
+    try:
+        nltk.data.find('tokenizers/punkt_tab')
+        print("✅ punkt_tab 资源可用")
+    except LookupError:
+        # 如果没有 punkt_tab，尝试 punkt
+        try:
+            nltk.data.find('tokenizers/punkt')
+            print("✅ punkt 资源可用（使用兼容模式）")
+        except LookupError:
+            print("❌ NLTK 资源缺失，请检查 nltk_data 目录")
+            raise
 
 
 # ====== 1. 缓存加载 spaCy 模型 ======
@@ -34,10 +51,10 @@ def load_spacy_model():
         return spacy.load("en_core_web_sm")
 
 
-# 在 initialize_app() 函数中调用
-# 初始化应用
+# 在 initialize_app() 函数开头调用
 def initialize_app():
-    # 不再尝试下载，直接使用本地资源
+    ensure_nltk_resources()  # 新增这行
+
     nlp = load_spacy_model()
     tokenizer, model = load_bert_model()
     return nlp, tokenizer, model
