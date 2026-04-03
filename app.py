@@ -37,35 +37,7 @@ def load_spacy_model():
 # 在 initialize_app() 函数中调用
 # 初始化应用
 def initialize_app():
-    # ====== 新增：NLTK 资源自动下载 ======
-    import ssl
-
-    # 处理 SSL 证书问题
-    try:
-        _create_unverified_https_context = ssl._create_unverified_https_context
-    except AttributeError:
-        pass
-    else:
-        ssl._create_default_https_context = _create_unverified_https_context
-
-    # 下载所需资源
-    required_resources = ['punkt_tab', 'punkt', 'wordnet', 'omw-1.4']
-
-    for resource in required_resources:
-        try:
-            nltk.data.find(resource)
-        except LookupError:
-            try:
-                nltk.download(resource, download_dir=nltk_data_dir, quiet=True)
-            except Exception as e:
-                # 如果 punkt_tab 下载失败，尝试 punkt
-                if resource == 'punkt_tab':
-                    try:
-                        nltk.download('punkt', download_dir=nltk_data_dir, quiet=True)
-                    except:
-                        pass
-
-    # 加载其他模型
+    # 不再尝试下载，直接使用本地资源
     nlp = load_spacy_model()
     tokenizer, model = load_bert_model()
     return nlp, tokenizer, model
