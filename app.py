@@ -22,11 +22,12 @@ from transformers import BertTokenizer, BertModel
 nltk_data_dir = os.path.join(os.path.dirname(__file__), 'nltk_data')
 nltk.data.path.insert(0, nltk_data_dir)
 
-# ====== 新增：兼容性检查 ======
-def ensure_nltk_resources():
-    """确保 NLTK 资源可用"""
-    # 优先尝试 punkt_tab
+
+# ====== 新增：兼容性处理 ======
+def ensure_punkt_compatibility():
+    """确保 punkt 或 punkt_tab 可用"""
     try:
+        # 优先尝试 punkt_tab
         nltk.data.find('tokenizers/punkt_tab')
         print("✅ punkt_tab 资源可用")
     except LookupError:
@@ -34,9 +35,19 @@ def ensure_nltk_resources():
         try:
             nltk.data.find('tokenizers/punkt')
             print("✅ punkt 资源可用（使用兼容模式）")
+            # 创建符号链接或复制文件
+            import shutil
+            punkt_path = os.path.join(nltk_data_dir, 'tokenizers', 'punkt')
+            punkt_tab_path = os.path.join(nltk_data_dir, 'tokenizers', 'punkt_tab')
+
+            if os.path.exists(punkt_path) and not os.path.exists(punkt_tab_path):
+                # 复制 punkt 作为 punkt_tab
+                shutil.copytree(punkt_path, punkt_tab_path)
+                print("🔄 已将 punkt 复制为 punkt_tab")
         except LookupError:
-            print("❌ NLTK 资源缺失，请检查 nltk_data 目录")
+            print("❌ NLTK 资源缺失")
             raise
+
 
 
 # ====== 1. 缓存加载 spaCy 模型 ======
@@ -53,7 +64,7 @@ def load_spacy_model():
 
 # 在 initialize_app() 函数开头调用
 def initialize_app():
-    ensure_nltk_resources()  # 新增这行
+    ensure_punkt_compatibility()  # 新增这行
 
     nlp = load_spacy_model()
     tokenizer, model = load_bert_model()
